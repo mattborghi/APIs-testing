@@ -1,0 +1,78 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Unknown </title></head><body>
+<h1 id="create-simple-api-using-python-django-rest-framework">Create Simple API using Python Django REST Framework</h1>
+<p><img alt="project-scheme" src="about-1.png"/></p>
+<ol>
+<li>
+<p>First install dependencies</p>
+<p><code>$ pip install django djangorestframework</code></p>
+</li>
+<li>
+<p>Inside project folder create a django project</p>
+<p><code>$ django-admin startproject &lt;project-name&gt;</code></p>
+</li>
+<li>
+<p>Inside the django project folder run the following command to create the web project folder (run with v3 of python).</p>
+<p><code>$ python manage.py startapp &lt;app-name&gt;</code></p>
+</li>
+<li>
+<p>Inside my django project folder and settings.py file under INSTALLED_APPS add two lines with</p>
+<p>~~~~json
+'rest_framework',
+'MyApp'
+~~~~</p>
+</li>
+<li>
+<p>Then in views.py we will calculate the logic for calculating the ideal weight given the height.
+Replace with the following lines:</p>
+<p>~~~~python
+from django.shortcuts import render
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response 
+from rest_framework import status
+from django.http import JsonResponse
+from django.core import serializers
+from django.conf import settings
+import json</p>
+<h1 id="create-your-views-here">Create your views here.</h1>
+<p>@api_view(["POST"])
+def IdealWeight(heightdata):
+    try:
+        height = json.loads(heightdata.body.decode('utf-8'))
+        weight = str(height*10)</p>
+<pre><code>    return JsonResponse("Ideal weight should be: " + weight + " kg", safe=False)
+except ValueError as e:
+    return Response(e.args[0], status.HTTP_400_BAD_REQUEST)
+</code></pre>
+<p>~~~~</p>
+</li>
+<li>
+<p>Then in urls.py add the url to access this method we just created.</p>
+<p>~~~~python
+from django.contrib import admin
+from django.conf.urls import url
+from MyApp import views</p>
+<p>urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^idealweight/', views.IdealWeight)
+]
+~~~~</p>
+</li>
+<li>
+<p>After that, run the backend server using</p>
+<p><code>$ python manage.py runserver</code></p>
+<p>maybe this command throws an error and you have to migrate first</p>
+<p><code>$ python3 manage.py migrate</code></p>
+<p>If this throws an error of port already in use simply type:</p>
+<p><code>$ sudo fuser -k 8000/tcp</code></p>
+</li>
+<li>
+<p>Finally, to test the API we should install postman. In my case, using Ubuntu first install snap,</p>
+<p><code>$ sudo apt install snapd snapd-xdg-open</code></p>
+<p>and then postman (there are alternatives to this obviously)</p>
+<p><code>$ snap install postman</code></p>
+</li>
+</ol>
+<p><img alt="project-screen" src="screenshot-1.png"/></p>
+</body></html>
